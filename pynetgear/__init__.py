@@ -65,7 +65,12 @@ class Netgear(object):
             return None
 
         data = re.search(r"<NewAttachDevice>(.*)</NewAttachDevice>",
-                         response).group(1).split(";")
+                         response).group(1)
+        
+        # These HTML codes break the 'split' call below because of the ';' and need to be removed
+        data = data.replace('&lt;', '<')
+        data = data.replace('&gt;', '>')
+        data = data.split(";")
 
         devices = []
 
@@ -81,12 +86,28 @@ class Netgear(object):
 
             if len(info) == 0:
                 continue
-            elif len(info) < 4:
+            elif len(info) < 3:
                 _LOGGER.warning('Unexpected entry: %s', info)
                 continue
 
-            signal = convert(info[0].split("@")[0], int)
-            ipv4, name, mac = info[1:4]
+            signal = 1
+            mac = ''
+            ipv4 = ''
+            name = ''
+            if len(info) == 4 and info[0].count('@') == 1 and info[0].count(':') == 5:
+                signal = convert(info[0].split("@")[1], int)
+                mac = info[0].split("@")[0]
+                ipv4, name = info[1:3]
+            else
+                signal = convert(info[0].split("@")[0], int)
+                # ipv4, name, mac = info[1:4]
+                for i in range(1, 4):
+                    if info[i].count(':') == 5:
+                        mac = info[i]
+                    elif info[i].count('.') == 3:
+                        ipv4 = info[i]
+                    else
+                        name = info[i]
 
             # Not all routers will report link type and rate
             if len(info) >= 6:
