@@ -98,7 +98,7 @@ class Netgear(object):
                 signal = convert(info[0].split("@")[1], int)
                 mac = info[0].split("@")[0]
                 ipv4, name = info[1:3]
-            else
+            else:
                 signal = convert(info[0].split("@")[0], int)
                 # ipv4, name, mac = info[1:4]
                 for i in range(1, 4):
@@ -106,7 +106,7 @@ class Netgear(object):
                         mac = info[i]
                     elif info[i].count('.') == 3:
                         ipv4 = info[i]
-                    else
+                    else:
                         name = info[i]
 
             # Not all routers will report link type and rate
