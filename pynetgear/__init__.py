@@ -90,6 +90,10 @@ class Netgear(object):
                 _LOGGER.warning('Unexpected entry: %s', info)
                 continue
 
+            # List formats of info retrieved from Netgear routers
+            # WNDR3700v2, Firmware 1.0.1.14; mac@[index or signal], ipv4, name
+            # R6900     , Firmware 1.0.1.16; [allow,block]@index, name, ipv4, mac, link type, number (link-rate?), number
+            
             signal = 1
             mac = ''
             ipv4 = ''
@@ -100,7 +104,6 @@ class Netgear(object):
                 ipv4, name = info[1:3]
             else:
                 signal = convert(info[0].split("@")[0], int)
-                # ipv4, name, mac = info[1:4]
                 for i in range(1, 4):
                     if info[i].count(':') == 5:
                         mac = info[i]
